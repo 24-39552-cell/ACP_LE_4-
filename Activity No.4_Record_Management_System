@@ -1,0 +1,107 @@
+import os
+
+# Path to Documents folder
+doc_path = os.path.expanduser("~/Documents")
+
+# Ensure Documents folder exists
+if not os.path.exists(doc_path):
+    os.makedirs(doc_path)
+
+# Function to validate student number 
+def valid_student_no(sno):
+    return all(c.isdigit() or c == "-" for c in sno) and any(c.isdigit() for c in sno)
+
+while True:  # Main loop (which the users can select options on the menu)
+    print("\n===============================")
+    print(" Student Records Management ")
+    print("1. Register Student")
+    print("2. Open Student Record")
+    print("3. Exit")
+    print("===============================")
+
+    try: # Get user choice
+        choice = int(input("Enter your choice: "))
+    except ValueError:
+        print("Invalid input. Please enter a number from 1-3.")
+        continue
+
+    # Option 1: To register a student and save to a text file
+    if choice == 1: 
+        print("\nEnter Student Details:") 
+
+        while True:
+            student_no = input("Student No.: ") # Validate student number
+            if valid_student_no(student_no):
+                break
+            else:
+                print("Invalid student no. Please enter an integer.") # Prompt again if invalid
+
+        last_name = input("Last Name: ")
+        first_name = input("First Name: ")
+        middle_initial = input("Middle Initial: ")
+        program = input("Program: ")
+
+        while True: # Validate age input
+            try:
+                age = int(input("Age: "))
+                break
+            except ValueError:
+                print("Invalid age. Please enter a number.") # Prompt again if invalid
+
+        gender = input("Gender: ")
+        birthday = input("Birthday (MM/DD/YYYY): ")
+
+        while True: # Validate contact number input
+            contact = input("Contact No.: ")
+            if contact.isdigit():
+                break
+            else: 
+                print("Invalid contact number. Please enter digits only.") # Prompt again if invalid
+
+        # Prepare student data (this is the format of data that should be saved in the file)
+        data = [
+            f"Student No.: {student_no}",
+            f"Full Name: {last_name}, {first_name} {middle_initial}.",
+            f"Program: {program}",
+            f"Age: {age}",
+            f"Gender: {gender}",
+            f"Birthday: {birthday}",
+            f"Contact No.: {contact}"
+        ]
+
+        # Save to file (one file per student register, named by their student number)
+        file_path = os.path.join(doc_path, f"{student_no}.txt")
+        with open(file_path, "w") as f: 
+            for line in data:
+                f.write(line + "\n") 
+
+        print(f"Student record saved as '{file_path}'.") # Confirmation message if successfully saved
+
+    # Option 2: Open student record and display content
+    elif choice == 2:
+        while True: 
+            student_no = input("Enter Student No. to open: ")
+            if valid_student_no(student_no):
+                break 
+            else:
+                print("Invalid student no. Please enter a new.")
+
+        file_path = os.path.join(doc_path, f"{student_no}.txt") # File path based on student number
+
+    # Display student record if file exists
+        try: 
+            with open(file_path, "r") as f: # Open file for reading
+                print("\n--- Student Record ---")
+                for line in f:
+                    print(line.strip())
+                print("----------------------")
+        except FileNotFoundError:
+            print(f"Record for Student No. '{student_no}' not found.")
+
+    # Option 3: Exit the program
+    elif choice == 3:
+        print("Exiting the program. Thank you for using the system! ")
+        break
+
+    else:
+        print("Invalid choice. Please select from 1-3.")
