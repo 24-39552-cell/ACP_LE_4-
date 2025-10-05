@@ -84,7 +84,7 @@ while True:  # Main loop (which the users can select options on the menu)
             if valid_student_no(student_no):
                 break 
             else:
-                print("Student not found.")
+                print("Invalid student no. Please enter again.")
 
         file_path = os.path.join(doc_path, f"{student_no}.txt") # File path based on student number
 
